@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DiecastShowroom</title>
+  <meta name="description" content="DiecastShowroom - Collectible diecast models across Pakistan" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial;color:#111}
+    :root{
+      --bg:#0b0b0b;
+      --panel:#0f0f0f;
+      --accent:#e10600;
+      --muted:#d9d9d9;
+      --card:#111;
+      --glass:rgba(255,255,255,0.03);
+    }
+    body{background:linear-gradient(180deg,var(--bg),#070707);color:var(--muted)}
+    .container{max-width:1200px;margin:0 auto;padding:28px}
+    header{display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:64px;height:64px;border-radius:8px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center}
+    .logo img{width:100%;height:100%;object-fit:contain}
+    h1{font-size:20px;color:#fff}
+    nav{display:flex;gap:14px}
+    nav a{color:var(--muted);text-decoration:none;padding:8px 12px;border-radius:8px}
+    nav a:hover{background:var(--glass);color:#fff}
+    .hero{display:grid;grid-template-columns:1fr 360px;gap:24px;margin-top:22px;align-items:center}
+    .hero-left{padding:28px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);border-radius:16px}
+    .hero h2{font-size:34px;color:#fff;line-height:1.02;margin-bottom:10px}
+    .hero p{color:var(--muted);margin-bottom:18px}
+    .cta{display:flex;gap:10px}
+    .btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;border-radius:999px;font-weight:600;text-decoration:none}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+    .hero-right{background:url('images/hero.jpg') center/cover no-repeat;border-radius:12px;height:220px;box-shadow:0 10px 30px rgba(0,0,0,0.6)}
+    .section-title{display:flex;align-items:center;justify-content:space-between;margin:22px 0}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px}
+    .card{background:var(--card);border-radius:12px;padding:12px;overflow:hidden;position:relative;transition:transform .18s}
+    .card:hover{transform:translateY(-6px)}
+    .card .imgwrap{width:100%;aspect-ratio:16/10;border-radius:8px;overflow:hidden;background:#222;display:flex;align-items:center;justify-content:center}
+    .card img{width:100%;height:100%;object-fit:cover;cursor:pointer}
+    .meta{padding:10px 4px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .meta .title{font-weight:700;color:#fff}
+    .meta .price{color:var(--accent);font-weight:800}
+    .card .actions{margin-top:8px;display:flex;gap:8px}
+    .tag{font-size:12px;padding:6px 8px;border-radius:999px;background:rgba(255,255,255,0.03);color:var(--muted)}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,0.86);display:none;align-items:center;justify-content:center;padding:20px;z-index:1200}
+    .modal.open{display:flex}
+    .modal .panel{max-width:1000px;width:100%;background:linear-gradient(180deg,#070707,#0e0e0e);border-radius:12px;padding:14px;display:grid;grid-template-columns:1fr 320px;gap:12px;position:relative}
+    .slide{height:60vh;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#000}
+    .slide img{max-width:100%;max-height:100%;object-fit:contain}
+    .thumbs{display:flex;flex-direction:column;gap:8px;padding:6px}
+    .thumbs img{width:100%;height:60px;object-fit:cover;border-radius:6px;cursor:pointer;opacity:.8}
+    .thumbs img.active{outline:3px solid var(--accent);opacity:1}
+    .modal .info{color:var(--muted);padding:6px}
+    .close{position:absolute;right:18px;top:18px;background:transparent;border:none;color:#fff;font-size:28px;cursor:pointer}
+    .whats-floating{position:fixed;right:18px;bottom:18px;background:var(--accent);color:#fff;border-radius:999px;padding:14px 16px;box-shadow:0 8px 30px rgba(225,16,0,0.25);z-index:1300;display:flex;align-items:center;gap:10px;text-decoration:none}
+    footer{margin-top:36px;padding:24px 0;border-top:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:space-between}
+    .socials{display:flex;gap:12px}
+    .socials a{padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);color:var(--muted);text-decoration:none}
+    @media (max-width:900px){
+      .hero{grid-template-columns:1fr}
+      .hero-right{height:160px}
+      .modal .panel{grid-template-columns:1fr}
+      .thumbs{flex-direction:row;overflow:auto}
+      .thumbs img{height:48px;width:120px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo"><img src="images/logo.png" alt="DiecastShowroom logo" /></div>
+        <div>
+          <h1>Diecast Showroom</h1>
+          <div style="font-size:12px;color:var(--muted)">Premium diecast models across Pakistan</div>
+        </div>
+      </div>
+      <nav>
+        <a href="#models">Models</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+    <section class="hero">
+      <div class="hero-left">
+        <h2>Collectible Diecast Models — Nationwide Delivery (Pakistan)</h2>
+        <p>Hi, I am Waqas, the owner of DiecastShowroom. I run this shop myself. High-detail diecast cars are added regularly. Click any model to view all images and tap Buy Now to place an order on WhatsApp.
+</p>
+        <div class="cta">
+          <a id="heroOrder" class="btn btn-primary" href="#">Order via WhatsApp</a>
+          <a class="btn btn-ghost" href="#models">View Models</a>
+        </div>
+      </div>
+      <div class="hero-right" aria-hidden="true"></div>
+    </section>
+    <div class="section-title">
+      <h3 style="color:#fff">Models</h3>
+      <div style="color:var(--muted);font-size:14px">Click any main image to open gallery + Buy Now</div>
+    </div>
+    <section id="models" class="grid" aria-live="polite"></section>
+    <section id="about" style="margin-top:26px">
+      <h3 style="color:#fff">About</h3>
+      <p style="color:var(--muted);margin-top:8px;max-width:780px">DiecastShowroom curates premium diecast models for collectors across Pakistan. I add new models frequently — each model has a slideshow of multiple images, model name and price, and a Buy Now button which opens WhatsApp with a pre-filled order message.</p>
+    </section>
+    <footer id="contact">
+      <div>
+        <strong style="color:#fff">DiecastShowroom</strong>
+        <div style="color:var(--muted);font-size:13px;margin-top:6px">© Diecast Showroom — All rights reserved</div>
+      </div>
+      <div class="socials">
+        <a href="https://www.instagram.com/diecastshowroompk" id="insta" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.facebook.com/WaqasHaider1234" id="facebook" target="_blank" rel="noopener">Facebook</a>
+        <a href="https://youtube.com/@diecastshowroompk" id="youtube" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://www.tiktok.com/@diecastshowroompk" id="tiktok" target="_blank" rel="noopener">TikTok</a>
+      </div>
+    </footer>
+  </div>
+  <a id="floatingWA" class="whats-floating" href="#" aria-label="WhatsApp order">Order on WhatsApp</a>
+  <div id="modal" class="modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="panel">
+      <button class="close" id="closeModal">✕</button>
+      <div>
+        <div class="slide" id="slideArea"><img src="" alt="" id="slideImage"></div>
+        <div style="display:flex;gap:8px;margin-top:8px;justify-content:space-between;align-items:center">
+          <button id="prevBtn" class="btn btn-ghost">‹ Prev</button>
+          <button id="nextBtn" class="btn btn-ghost">Next ›</button>
+          <a id="buyNowModal" class="btn btn-primary" href="#">Buy Now on WhatsApp</a>
+        </div>
+      </div>
+      <aside class="info">
+        <h3 id="modalTitle" style="color:#fff;margin-bottom:6px"></h3>
+        <div id="modalPrice" style="font-weight:800;color:var(--accent);margin-bottom:10px"></div>
+        <div style="color:var(--muted);font-size:14px;margin-bottom:12px">Thumbnails</div>
+        <div class="thumbs" id="thumbs"></div>
+      </aside>
+    </div>
+  </div>
+  <script>
+    const phoneNumber = '923274799089';
+    const socials = {
+      instagram: 'https://www.instagram.com/diecastshowroompk',
+      facebook: 'https://www.facebook.com/WaqasHaider1234',
+      youtube: 'https://youtube.com/@diecastshowroompk',
+      tiktok: 'https://www.tiktok.com/@diecastshowroompk'
+    };
+    const models = [
+      {
+        id: '0001',
+        title: 'Toyota Supra MK5',
+        price: 'PKR 4,200',
+        folder: 'imageset1',
+        main: 'images/imageset1/main.jpg',
+        images: [
+          'images/imageset1/main.jpg',
+          'images/imageset1/image2.jpg',
+          'images/imageset1/image3.jpg',
+          'images/imageset1/image4.jpg',
+          'images/imageset1/image5.jpg'
+        ]
+      },
+      {
+        id: '0002',
+        title: 'Honda Civic Type R-FK8',
+        price: 'PKR 4,200',
+        folder: 'imageset2',
+        main: 'images/imageset2/main.jpg',
+        images: [
+          'images/imageset2/main.jpg',
+          'images/imageset2/image2.jpg',
+          'images/imageset2/image3.jpg',
+          'images/imageset2/image4.jpg',
+          'images/imageset2/image5.jpg'
+        ]
+      },
+      {
+        id: '0003',
+        title: 'Toyota Corolla',
+        price: 'PKR 4,200',
+        folder: 'imageset3',
+        main: 'images/imageset3/main.jpg',
+        images: [
+          'images/imageset3/main.jpg',
+          'images/imageset3/image2.jpg',
+          'images/imageset3/image3.jpg',
+          'images/imageset3/image4.jpg',
+          'images/imageset3/image5.jpg'
+        ]
+      },
+      {
+        id: '0004',
+        title: 'Land Cruiser LC 300',
+        price: 'PKR 6,500',
+        folder: 'imageset3',
+        main: 'images/imageset4/main.jpg',
+        images: [
+          'images/imageset4/main.jpg',
+          'images/imageset4/image2.jpg',
+          'images/imageset4/image3.jpg',
+          'images/imageset4/image4.jpg',
+          'images/imageset4/image5.jpg'
+        ]
+      },
+      {
+        id: '0005',
+        title: 'Land Cruiser Prado 2025',
+        price: 'PKR 6,500',
+        folder: 'imageset3',
+        main: 'images/imageset5/main.jpg',
+        images: [
+          'images/imageset5/main.jpg',
+          'images/imageset5/image2.jpg',
+          'images/imageset5/image3.jpg',
+          'images/imageset5/image4.jpg',
+          'images/imageset5/image5.jpg'
+        ]
+      },
+      {
+        id: '0006',
+        title: 'Mercedes-Benz W120',
+        price: 'PKR 6,500',
+        folder: 'imageset3',
+        main: 'images/imageset6/main.jpg',
+        images: [
+          'images/imageset6/main.jpg',
+          'images/imageset6/image2.jpg',
+          'images/imageset6/image3.jpg',
+          'images/imageset6/image4.jpg',
+          'images/imageset6/image5.jpg'
+        ]
+      },
+      {
+        id: '0007',
+        title: 'Nissan Skyline GTR R34',
+        price: 'PKR 4,200',
+        folder: 'imageset3',
+        main: 'images/imageset7/main.jpg',
+        images: [
+          'images/imageset7/main.jpg',
+          'images/imageset7/image2.jpg',
+          'images/imageset7/image3.jpg',
+          'images/imageset7/image4.jpg',
+          'images/imageset7/image5.jpg'
+        ]
+      },
+      {
+        id: '0008',
+        title: 'Rolls Royce Phantom 1-32',
+        price: 'PKR 4,200',
+        folder: 'imageset3',
+        main: 'images/imageset8/main.jpg',
+        images: [
+          'images/imageset8/main.jpg',
+          'images/imageset8/image2.jpg',
+          'images/imageset8/image3.jpg',
+          'images/imageset8/image4.jpg',
+          'images/imageset8/image5.jpg'
+        ]
+      },
+      {
+        id: '0009',
+        title: 'Suzuki GS125',
+        price: 'PKR 6,700',
+        folder: 'imageset3',
+        main: 'images/imageset9/main.jpg',
+        images: [
+          'images/imageset9/main.jpg',
+          'images/imageset9/image2.jpg',
+          'images/imageset9/image3.jpg',
+          'images/imageset9/image4.jpg',
+          'images/imageset9/image5.jpg'
+        ]
+      },
+      {
+        id: '0010',
+        title: 'Toyota Corolla',
+        price: 'PKR 4,200',
+        folder: 'imageset10',
+        main: 'images/imageset10/main.jpg',
+        images: [
+          'images/imageset10/main.jpg',
+          'images/imageset10/image2.jpg',
+          'images/imageset10/image3.jpg',
+          'images/imageset10/image4.jpg',
+          'images/imageset10/image5.jpg'
+        ]
+      },
+      {
+        id: '0012',
+        title: 'Toyota Corolla',
+        price: 'PKR 4,200',
+        folder: 'imageset3',
+        main: 'images/imageset12/main.jpg',
+        images: [
+          'images/imageset12/main.jpg',
+          'images/imageset12/image2.jpg',
+          'images/imageset12/image3.jpg',
+          'images/imageset12/image4.jpg',
+          'images/imageset12/image5.jpg'
+        ]
+      },
+      {
+        id: '0012',
+        title: 'Toyota Corolla',
+        price: 'PKR 4,200',
+        folder: 'imageset3',
+        main: 'images/imageset12/main.jpg',
+        images: [
+          'images/imageset12/main.jpg',
+          'images/imageset12/image2.jpg',
+          'images/imageset12/image3.jpg',
+          'images/imageset12/image4.jpg',
+          'images/imageset12/image5.jpg'
+        ]
+      },
+      {
+        id: '0013',
+        title: 'Toyota Corolla',
+        price: 'PKR 4,200',
+        folder: 'imageset3',
+        main: 'images/imageset13/main.jpg',
+        images: [
+          'images/imageset13/main.jpg',
+          'images/imageset13/image2.jpg',
+          'images/imageset13/image3.jpg',
+          'images/imageset13/image4.jpg',
+          'images/imageset13/image5.jpg'
+        ]
+      },
+      {
+        id: '0014',
+        title: 'Toyota Corolla',
+        price: 'PKR 4,200',
+        folder: 'imageset3',
+        main: 'images/imageset14/main.jpg',
+        images: [
+          'images/imageset14/main.jpg',
+          'images/imageset14/image2.jpg',
+          'images/imageset14/image3.jpg',
+          'images/imageset14/image4.jpg',
+          'images/imageset14/image5.jpg'
+        ]
+      },
+      {
+        id: '0015',
+        title: 'Toyota Corolla',
+        price: 'PKR 4,200',
+        folder: 'imageset3',
+        main: 'images/imageset15/main.jpg',
+        images: [
+          'images/imageset15/main.jpg',
+          'images/imageset15/image2.jpg',
+          'images/imageset15/image3.jpg',
+          'images/imageset15/image4.jpg',
+          'images/imageset15/image5.jpg'
+        ]
+      },
+      {
+        id: '0016',
+        title: 'Toyota Corolla',
+        price: 'PKR 4,200',
+        folder: 'imageset3',
+        main: 'images/imageset16/main.jpg',
+        images: [
+          'images/imageset16/main.jpg',
+          'images/imageset16/image2.jpg',
+          'images/imageset16/image3.jpg',
+          'images/imageset16/image4.jpg',
+          'images/imageset16/image5.jpg'
+        ]
+      },
+      {
+        id: '0017',
+        title: 'Toyota Corolla',
+        price: 'PKR 4,200',
+        folder: 'imageset3',
+        main: 'images/imageset17/main.jpg',
+        images: [
+          'images/imageset17/main.jpg',
+          'images/imageset17/image2.jpg',
+          'images/imageset17/image3.jpg',
+          'images/imageset17/image4.jpg',
+          'images/imageset17/image5.jpg'
+        ]
+      },
+      {
+        id: '0018',
+        title: 'Toyota Corolla',
+        price: 'PKR 4,200',
+        folder: 'imageset3',
+        main: 'images/imageset18/main.jpg',
+        images: [
+          'images/imageset18/main.jpg',
+          'images/imageset18/image2.jpg',
+          'images/imageset18/image3.jpg',
+          'images/imageset18/image4.jpg',
+          'images/imageset18/image5.jpg'
+        ]
+      },
+      {
+        id: '0019',
+        title: 'Toyota Corolla',
+        price: 'PKR 4,200',
+        folder: 'imageset3',
+        main: 'images/imageset19/main.jpg',
+        images: [
+          'images/imageset19/main.jpg',
+          'images/imageset19/image2.jpg',
+          'images/imageset19/image3.jpg',
+          'images/imageset19/image4.jpg',
+          'images/imageset19/image5.jpg'
+        ]
+      },
+      {
+        id: '0020',
+        title: 'Toyota Corolla',
+        price: 'PKR 4,200',
+        folder: 'imageset3',
+        main: 'images/imageset20/main.jpg',
+        images: [
+          'images/imageset20/main.jpg',
+          'images/imageset20/image2.jpg',
+          'images/imageset20/image3.jpg',
+          'images/imageset20/image4.jpg',
+          'images/imageset20/image5.jpg'
+        ]
+      }
+    ];
+    function whatsappLink(text){
+      const encoded = encodeURIComponent(text);
+      return `https://wa.me/${phoneNumber}?text=${encoded}`;
+    }
+    // populate social links
+    document.getElementById('insta').href = socials.instagram;
+    document.getElementById('facebook').href = socials.facebook;
+    document.getElementById('youtube').href = socials.youtube;
+    document.getElementById('tiktok').href = socials.tiktok;
+    // hero and floating buttons
+    document.getElementById('heroOrder').href = whatsappLink('Hello, I want to order from DiecastShowroom. Please assist me.');
+    document.getElementById('floatingWA').href = whatsappLink('Hello, I want to order from DiecastShowroom.');
+    const grid = document.querySelector('#models');
+    function renderGrid(){
+      grid.innerHTML = '';
+      models.forEach((m, idx) => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="imgwrap"><img src="${m.main}" alt="${m.title}" loading="lazy" data-index="${idx}"></div>
+          <div class="meta">
+            <div>
+              <div class="title">${m.title}</div>
+              <div style="font-size:12px;color:var(--muted)">Model ID: ${m.id}</div>
+            </div>
+            <div class="price">${m.price}</div>
+          </div>
+          <div class="actions">
+            <a class="btn btn-primary" href="${whatsappLink('Hello, I would like to buy: '+m.title+' — '+m.price)}" target="_blank">Buy Now</a>
+            <a class="btn btn-ghost" href="#" data-open-gallery data-index="${idx}">View</a>
+          </div>`;
+        grid.appendChild(card);
+      });
+      document.querySelectorAll('[data-open-gallery]').forEach(btn => {
+        btn.addEventListener('click', e => {e.preventDefault();openModal(Number(btn.dataset.index));});
+      });
+      document.querySelectorAll('.imgwrap img').forEach(img => {
+        img.addEventListener('click', () => {openModal(Number(img.dataset.index));});
+      });
+    }
+    renderGrid();
+    const modal = document.getElementById('modal');
+    const slideImage = document.getElementById('slideImage');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalPrice = document.getElementById('modalPrice');
+    const thumbs = document.getElementById('thumbs');
+    const buyNowModal = document.getElementById('buyNowModal');
+    let currentModel=null;let currentIndex=0;
+    function openModal(modelIdx){
+      currentModel=models[modelIdx];currentIndex=0;
+      modalTitle.textContent=currentModel.title;
+      modalPrice.textContent=currentModel.price;
+      buyNowModal.href=whatsappLink('Hello, I would like to buy: '+currentModel.title+' — '+currentModel.price);
+      renderSlide();
+      renderThumbs();
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden','false');
+    }
+    function closeModal(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');}
+    document.getElementById('closeModal').addEventListener('click',closeModal);
+    modal.addEventListener('click',(e)=>{ if(e.target===modal) closeModal(); });
+    function renderSlide(){
+      slideImage.src=currentModel.images[currentIndex];
+      slideImage.alt=currentModel.title+ ' — image '+(currentIndex+1);
+      updateThumbsActive();
+    }
+    function renderThumbs(){
+      thumbs.innerHTML='';
+      currentModel.images.forEach((img,idx)=>{
+        const t=document.createElement('img');t.src=img; t.loading='lazy';
+        if(idx===currentIndex) t.classList.add('active');
+        t.addEventListener('click',()=>{currentIndex=idx;renderSlide();});
+        thumbs.appendChild(t);
+      });
+    }
+    function updateThumbsActive(){
+      thumbs.querySelectorAll('img').forEach((t,idx)=>{ t.classList.toggle('active', idx===currentIndex); });
+    }
+    document.getElementById('prevBtn').addEventListener('click',()=>{
+      currentIndex=(currentIndex-1+currentModel.images.length)%currentModel.images.length;renderSlide();
+    });
+    document.getElementById('nextBtn').addEventListener('click',()=>{
+      currentIndex=(currentIndex+1)%currentModel.images.length;renderSlide();
+    });
+    window.addEventListener('keydown',e=>{
+      if(!modal.classList.contains('open'))return;
+      if(e.key==='Escape')closeModal();
+      if(e.key==='ArrowRight')document.getElementById('nextBtn').click();
+      if(e.key==='ArrowLeft')document.getElementById('prevBtn').click();
+    });
+    // helper to add a model programmatically
+    function addModel(obj){ models.push(obj); renderGrid(); }
+    /*
+      Notes (upload + editing):
+      - Folder structure:
+        /index.html
+        /images/logo.png
+        /images/hero.jpg
+        /images/imageset1/main.jpg
+        /images/imageset1/image2.jpg
+        /images/imageset2/main.jpg
+        ...
+      - To add a model: create images/imagesetN/ and upload main.jpg and image2.jpg, image3.jpg...
+      - Then add a new object to the `models` array (or maintain a models.json and modify JS to fetch it).
+      - All WhatsApp messages use "I" phrasing and reference DiecastShowroom (no space) as requested.
+    */
+  </script>
+</body>
+</html>
